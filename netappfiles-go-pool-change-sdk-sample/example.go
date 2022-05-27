@@ -22,8 +22,8 @@ import (
 
 	"github.com/Azure-Samples/netappfiles-go-pool-change-sdk-sample/netappfiles-go-pool-change-sdk-sample/internal/sdkutils"
 	"github.com/Azure-Samples/netappfiles-go-pool-change-sdk-sample/netappfiles-go-pool-change-sdk-sample/internal/utils"
-	"github.com/Azure/azure-sdk-for-go/profiles/latest/netapp/mgmt/netapp"
-	"github.com/Azure/go-autorest/autorest/to"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/netapp/armnetapp"
 	"github.com/yelinaung/go-haikunator"
 )
 
@@ -56,8 +56,8 @@ var (
 	volumeSizeBytes       int64 = 107374182400  // 100GiB (minimum volume size)
 	protocolTypes               = []string{"NFSv3"}
 	sampleTags                  = map[string]*string{
-		"Author":  to.StringPtr("ANF Go Pool Change SDK Sample"),
-		"Service": to.StringPtr("Azure Netapp Files"),
+		"Author":  to.Ptr("ANF Go Pool Change SDK Sample"),
+		"Service": to.Ptr("Azure Netapp Files"),
 	}
 
 	// Capacity Pools info
@@ -183,7 +183,7 @@ func main() {
 		false,
 		true,
 		sampleTags,
-		netapp.VolumePropertiesDataProtection{}, // This empty object is provided as nil since dataprotection is not scope of this sample
+		armnetapp.VolumePropertiesDataProtection{}, // This empty object is provided as nil since dataprotection is not scope of this sample
 	)
 
 	if err != nil {
@@ -209,7 +209,7 @@ func main() {
 	// Moving Volume to Standard tier capacity pool
 	//---------------------------------------------
 	utils.ConsoleOutput(fmt.Sprintf("Moving Volume %v to %v capacity pool...", volumeName, pools["Destination"].CapacityPoolName))
-	destinationPoolBody := netapp.PoolChangeRequest{
+	destinationPoolBody := armnetapp.PoolChangeRequest{
 		NewPoolResourceID: &pools["Destination"].CapacityPoolID,
 	}
 
