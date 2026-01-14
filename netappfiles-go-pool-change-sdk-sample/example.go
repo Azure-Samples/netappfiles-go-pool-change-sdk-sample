@@ -23,7 +23,7 @@ import (
 	"github.com/Azure-Samples/netappfiles-go-pool-change-sdk-sample/netappfiles-go-pool-change-sdk-sample/internal/sdkutils"
 	"github.com/Azure-Samples/netappfiles-go-pool-change-sdk-sample/netappfiles-go-pool-change-sdk-sample/internal/utils"
 	"github.com/Azure/azure-sdk-for-go/sdk/azcore/to"
-	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/netapp/armnetapp"
+	"github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/netapp/armnetapp/v8"
 	"github.com/yelinaung/go-haikunator"
 )
 
@@ -87,12 +87,11 @@ func main() {
 
 	utils.PrintHeader("Azure NetAppFiles Go Pool Change SDK Sample - Sample application that changes an NFSv3 volume tier from Premium to Standard by moving it to a new Capacity Pool.")
 
-	// Getting subscription ID from authentication file
-	config, err := utils.ReadAzureBasicInfoJSON(os.Getenv("AZURE_AUTH_LOCATION"))
+	// Getting subscription ID from environment
+	subscriptionID, err := utils.GetSubscriptionId()
 	if err != nil {
-		utils.ConsoleOutput(fmt.Sprintf("an error ocurred getting non-sensitive info from AzureAuthFile: %v", err))
+		utils.ConsoleOutput(fmt.Sprintf("an error ocurred getting the subscription ID: %v", err))
 		exitCode = 1
-		shouldCleanUp = false
 		return
 	}
 
@@ -102,7 +101,7 @@ func main() {
 
 	// Checking if subnet exists before any other operation starts
 	subnetID := fmt.Sprintf("/subscriptions/%v/resourceGroups/%v/providers/Microsoft.Network/virtualNetworks/%v/subnets/%v",
-		*config.SubscriptionID,
+		subscriptionID,
 		vnetresourceGroupName,
 		vnetName,
 		subnetName,
